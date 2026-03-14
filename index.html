@@ -780,12 +780,38 @@ function handleSubmit(){
   const name=document.getElementById('fname').value.trim();
   const email=document.getElementById('femail').value.trim();
   const forW=document.getElementById('ffor').value;
-  if(!name||!forW){
-    alert(T[lang].alertFields);return;
-  }
-  // ── INSERT YOUR MAILCHIMP / CONVERTKIT CODE HERE ──
-  console.log('midAI signup',{name,email,for:forW,lang});
-  // ─────────────────────────────────────────────────
+  if(!name||!forW){alert(T[lang].alertFields);return;}
+
+  // ── MAILCHIMP INTEGRATION ──
+  const url='https://github.us19.list-manage.com/subscribe/post?u=25c3bc5d6b28caf17a40d0c3e&id=cd79f3eec0&f_id=00f4a8e6f0';
+  const data=new FormData();
+  data.append('EMAIL', email);
+  data.append('FNAME', name);
+  data.append('MERGE2', forW);
+  data.append('b_25c3bc5d6b28caf17a40d0c3e_cd79f3eec0',''); // honeypot
+
+  fetch(url.replace('/post?','/post-json?')+'&c=mailchimpCallback',{
+    method:'GET', mode:'no-cors'
+  });
+
+  // Also submit via hidden iframe for reliability
+  const frm=document.createElement('form');
+  frm.method='POST';
+  frm.action='https://github.us19.list-manage.com/subscribe/post?u=25c3bc5d6b28caf17a40d0c3e&id=cd79f3eec0&f_id=00f4a8e6f0';
+  frm.target='mc_iframe';
+  frm.style.display='none';
+  [['EMAIL',email],['FNAME',name],['MERGE2',forW],
+   ['b_25c3bc5d6b28caf17a40d0c3e_cd79f3eec0','']].forEach(([k,v])=>{
+    const i=document.createElement('input');
+    i.type='hidden';i.name=k;i.value=v;frm.appendChild(i);
+  });
+  document.body.appendChild(frm);
+  let ifr=document.getElementById('mc_iframe');
+  if(!ifr){ifr=document.createElement('iframe');ifr.name='mc_iframe';ifr.id='mc_iframe';ifr.style.display='none';document.body.appendChild(ifr);}
+  frm.submit();
+  document.body.removeChild(frm);
+  // ── END MAILCHIMP ──
+
   document.getElementById('formWrap').style.display='none';
   document.getElementById('successMsg').style.display='block';
 }

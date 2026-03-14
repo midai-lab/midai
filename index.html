@@ -355,6 +355,28 @@ footer{
   .nav-btn{display:none}
   footer{padding:20px}
 }
+.form-single{display:flex;flex-direction:column;gap:10px}
+.form-single input,.form-single select{
+  width:100%;padding:13px 16px;
+  border:1.5px solid var(--border);border-radius:10px;
+  font-family:'Inter',sans-serif;font-size:.92rem;
+  color:var(--black);outline:none;background:var(--white);
+  transition:border-color .2s,box-shadow .2s;
+}
+.form-single input::placeholder{color:#C0C0C0}
+.form-single input:focus,.form-single select:focus{border-color:#A0A0A0;box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+.form-single select{
+  cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23A0A0A0' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+}
+.btn-confirm{
+  width:100%;background:var(--black);color:var(--white);
+  border:none;border-radius:10px;padding:14px;
+  font-family:'Inter',sans-serif;font-size:.92rem;font-weight:600;
+  cursor:pointer;transition:background .18s;letter-spacing:.2px;
+}
+.btn-confirm:hover{background:#333}
 </style>
 </head>
 <body>
@@ -397,30 +419,22 @@ footer{
   <!-- FORM -->
   <div class="form-block" id="form">
     <div id="formWrap">
-      <div class="form-row" id="emailRow">
-        <input type="email" id="femail"
-               data-ph-en="Your email address"
-               data-ph-ro="Adresa ta de email"
-               placeholder="Your email address"
-               autocomplete="email"
-               onkeydown="if(event.key==='Enter')nextStep()"/>
-        <button onclick="nextStep()">
-          <span data-en>Join waitlist</span>
-          <span data-ro>Înscrie-te</span>
-        </button>
-      </div>
-
-      <div class="form-extra" id="formExtra">
+      <div class="form-single">
         <input type="text" id="fname"
                data-ph-en="First name"
                data-ph-ro="Prenume"
                placeholder="First name"
                autocomplete="given-name"/>
+        <input type="email" id="femail"
+               data-ph-en="Email address"
+               data-ph-ro="Adresa de email"
+               placeholder="Email address"
+               autocomplete="email"/>
         <select id="ffor">
-          <option value="" disabled selected id="optDefault"></option>
-          <option value="parent" data-en="For my child (ages 8–16)"  data-ro="Pentru copilul meu (8–16 ani)"></option>
-          <option value="adult"  data-en="For myself"                 data-ro="Pentru mine"></option>
-          <option value="both"   data-en="For both me and my child"   data-ro="Pentru mine și copilul meu"></option>
+          <option value="" disabled selected id="optDefault">This is for…</option>
+          <option value="parent" id="opt1">For my child (ages 8–16)</option>
+          <option value="adult"  id="opt2">For myself</option>
+          <option value="both"   id="opt3">For both me and my child</option>
         </select>
         <button class="btn-confirm" onclick="handleSubmit()">
           <span data-en>Reserve my spot — it's free</span>
@@ -761,20 +775,12 @@ function setLang(l){
     s.options[2].text=T[l].opt_adult;
     s.options[3].text=T[l].opt_both;
   }
+  // also update fname placeholder
+  const fn=document.getElementById('fname');
+  if(fn) fn.placeholder=l==='ro'?'Prenume':'First name';
   try{localStorage.setItem('midai_lang',l)}catch(e){}
 }
 (function(){try{const s=localStorage.getItem('midai_lang');setLang(s==='ro'?'ro':'en')}catch(e){setLang('en')}})();
-
-function nextStep(){
-  const email=document.getElementById('femail').value.trim();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-    const row=document.getElementById('emailRow');
-    row.style.animation='none';row.offsetHeight;row.style.animation='shake .4s ease';
-    return;
-  }
-  document.getElementById('formExtra').classList.add('show');
-  document.getElementById('fname').focus();
-}
 
 function handleSubmit(){
   const name=document.getElementById('fname').value.trim();

@@ -388,8 +388,8 @@ footer{
   </div>
   <div class="nav-right">
     <div class="lang-toggle">
-      <button class="lang-btn active" id="btnEN" onclick="setLang('en')">EN</button>
-      <button class="lang-btn"        id="btnRO" onclick="setLang('ro')">RO</button>
+      <button class="lang-btn"        id="btnEN" onclick="setLang('en')">EN</button>
+      <button class="lang-btn active" id="btnRO" onclick="setLang('ro')">RO</button>
     </div>
     <a href="#form" class="nav-btn">
       <span data-en>Get early access</span>
@@ -759,7 +759,7 @@ const T={
   en:{selectDefault:"This is for…",opt_parent:"For my child (ages 8–16)",opt_adult:"For myself",opt_both:"For both me and my child",alertEmail:"Please enter a valid email address.",alertFields:"Please fill in all fields."},
   ro:{selectDefault:"Aceasta este pentru…",opt_parent:"Pentru copilul meu (8–16 ani)",opt_adult:"Pentru mine",opt_both:"Pentru mine și copilul meu",alertEmail:"Te rugăm să introduci un email valid.",alertFields:"Te rugăm să completezi toate câmpurile."}
 };
-let lang='en';
+let lang='ro';
 
 function setLang(l){
   lang=l;
@@ -780,7 +780,7 @@ function setLang(l){
   if(fn) fn.placeholder=l==='ro'?'Prenume':'First name';
   try{localStorage.setItem('midai_lang',l)}catch(e){}
 }
-(function(){try{const s=localStorage.getItem('midai_lang');setLang(s==='ro'?'ro':'en')}catch(e){setLang('en')}})();
+(function(){try{const s=localStorage.getItem('midai_lang');setLang(s==='en'?'en':'ro')}catch(e){setLang('ro')}})();
 
 function handleSubmit(){
   const name=document.getElementById('fname').value.trim();
